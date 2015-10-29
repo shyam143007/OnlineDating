@@ -1,0 +1,55 @@
+.left-arrow
+{
+	border-width: 10px;
+	border-color: transparent #FFFF66 transparent transparent;
+	border-radius: 5px;
+	border-style: solid;
+	border-left: -10px;
+	float: left;
+	margin-left: -10px;
+}
+
+.right-arrow
+{
+	background-color: transparent;
+	border-width: 10px;
+	border-color: transparent transparent transparent #FFFF66;
+	border-radius: 5px;
+	border-style: solid;
+	border-right: 10px;
+	float: right;
+}
+
+.left-message
+{
+	float: left;
+	background-color: transparent;
+	width: 80%;
+}
+
+.right-message
+{
+	float: right;
+	background-color: transparent;
+	width: 80%;
+}
+
+.message-content
+{
+	background-color: #FFFF66;
+	border-width:0.5px;
+	border-radius:5px;
+	min-width: 20%;
+	max-width: 80%;
+}
+.right-message-content
+{
+	float: right;
+	margin-right: -4px;
+}
+
+.left-message-content
+{
+	float: left;
+	margin-left: -4px;
+}

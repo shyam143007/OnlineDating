@@ -1,0 +1,526 @@
+{% extends 'DatingApp/base.html' %}
+
+
+<!-- css -->
+{% block internal_css %}
+
+	td
+	{
+		padding-top: .5em;
+		padding-bottom: .5em;
+	}
+	
+	.contact
+	{
+		margin-top: 10px;
+		width :100%;
+		border-radius: 5px;
+		border : 1px solid blue;
+		//background-color:#6666F0;
+	}
+
+	.details
+	{
+		font-size: 16px;
+	}
+
+	.contact-image
+	{
+		width:50px;
+		height:50px;
+		margin-left: 4px;
+		margin-top: 4px;
+	}
+	
+	#btnLoad
+	{
+		bottom: 0;
+		right:0;
+		position: absolute;
+		border-radius: 0px;
+	}
+
+	#displayZone
+	{
+		border: 1px solid black;
+		border-radius:2px;
+		min-height: 200px;
+		margin-left: 10px;
+		margin-top: 10px;
+		background-color:#D1E0FF;
+	}
+
+	#chatArea
+	{
+		right:0;
+		bottom:0;
+		position:fixed;
+		height:300px;
+		overflow-x:auto;
+		display: inline;
+	}
+
+	#chatWindow,#modelChatWindow
+	{
+		border: 1px solid;
+		height: 300px;
+		width: 270px;
+		z-index: 10;
+		border-radius:4px;
+		min-width: 250px;
+		bottom:0;
+		right:0;
+		background-image: url('/static/Images/chatBackground2.jpg');
+	}
+
+	#chatDisplay
+	{
+		width:100%;
+		height:75%;
+		overflow-y:auto;
+	}
+	
+	#chatComposeArea
+	{
+		width:100%;
+		height:40px;
+	}
+
+	#chatComposeArea button
+	{
+		min-width: 15px;
+		float:right;
+		width: 24%;
+	}
+
+	#chatComposer
+	{
+		width: 40%;
+		min-width: 180px;
+		height:40px;
+		resize:none;
+		float:left;
+	}
+
+
+	#navbarBlock
+	{
+		//height:10px;
+		width:100%;
+	}
+	.btn-group
+	{
+		width: 100%;
+		min-width:400px;
+		overflow-x:auto;
+		z-index:0;
+	}
+	.header-button
+	{
+		font-size: 16px;
+		width:25%;
+	}
+
+	.onlineDiv
+	{
+		//display:none;
+		margin-top:10px;
+		min-width:150px;
+		margin-left: 4px;
+		width:12%;
+		background-color:#fff;
+		padding-left:15px;
+		list-style-type: none;
+		border: solid 1px;
+		border-radius:5px;
+	}
+
+	.onlineDiv ul
+	{
+		list-style-type: none;
+		margin-left: -30px;
+		height: 250px;
+		overflow: auto;
+	}
+
+	label
+	{
+		display:inherit;
+	}
+
+    ul#navbarItemsList li
+	{
+		position: relative;
+	}
+
+	div#panel
+	{
+		display: none;
+		position: absolute;
+		z-index:1;
+		background-color: #FFFFff;
+		border : 1px solid;
+	}
+{% endblock %}
+
+{% block external_CSS %}
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}DatingApp/chatting.css">
+{% endblock %}
+
+
+{% block navbar_Header %}
+
+	Minion Match
+{% endblock %}
+
+{% block navbar_Items %}
+	<li>
+		<a id='user' data-toggle='toggle' href='#userModal' data-target='#userModal'>
+			<span class='glyphicon glyphicon-user'></span>{{user.name}}
+			<input type='hidden' id='userEmailId' value={{user.username}} />
+		</a>
+
+	</li>
+{% endblock %}
+
+<!-- html_body -->
+{% block html_body %}
+	<div class='container-fluid'>
+		<div class='btn-group'>
+			<button class='btn btn-default header-button' id='online'>Online</button>
+			<button class='btn btn-default header-button'>Messages</button>
+			<button class='btn btn-default header-button'>Contacts</button>
+			<button class='btn btn-default header-button'>Mails</button>
+		</div>
+		<br>
+		<br>
+		<div class='onlineDiv col-sm-2'>
+			<legend>Online</legend>
+			<ul>
+				{% for onlineUser in onlineUsers %}
+					<li>
+						<label class='chatLabel'>{{onlineUser.name}}</label>
+						<input type='hidden' id='emailId' value={{ onlineUser.username }}>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class='clearfix visible-sm'></div>
+		<div id='displayZone' class='col-sm-8'>
+			<table style='width:100%;margin-bottom:30px;'>
+				<tbody>
+					{% if contacts %}
+						{% for contact in contacts %}
+							<tr>
+								<td>	
+									<div class='contact'>
+										<div>
+											{% if contact.image|length > 0 %}
+												<img class='contact-image' src= {{STATIC_URL}}{{contact.image}} />
+											{% else %}
+												<img class='contact-image' src="/static/Images/Default/Minion/minion_match.jpg"/>
+											{% endif %}
+											
+											<a href='#'>{{ contact.name }}</a>
+										</div>
+
+										
+
+										<p>Current status : {{ contact.currentstatus }}</p>
+										
+										<p>Interested in :
+											{% if contact.interestedin == 0 %}
+												Female
+											{% else %}
+												Male
+											{% endif %}
+									    </p>
+									
+										<p>Marital status :
+											{% if contact.maritalstatus == 0 %}
+												Married
+											{% endif %}
+											{% if contact.maritalstatus == 1 %}
+												Un-married
+											{% endif %}
+											{% if contact.maritalstatus == 2 %}
+												In relation
+											{% endif %}
+										</p>
+									
+										<p>Hobbies : {{ contact.hobbies }} </p>
+									</div>
+								</td>
+							</tr>	
+							{% endfor %}
+					{% endif %}
+				</tbody>
+			</table>
+			
+			<button id='btnLoad' class='btn btn-info form-control'>Load more</button>
+		</div>
+
+		<div id='chatArea'>
+			<!--
+			<div class='col-sm-3'  id='modelChatWindow'>
+				<div id='chatWindowHeader'>
+					<button class='close' id='closeCurrentChat'>&times;</button>
+					<label class='label-control' id='chatTitle'></label>
+					<input id='modelToken' name='modelToken' type='hidden'>
+				</div>
+				<div id='chatDisplay'>
+				</div>
+				<fieldset>
+					<div id='chatComposeArea'>
+						<div>
+							<textarea class='form-control' id='chatComposer'></textarea>
+						</div>
+						<div>
+							<button class='btn' id='sendMessage'>Send</button>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			-->
+		</div>
+	</div>
+
+ 	<div class='modal fade' id='userModal' role='dialog'>
+ 		<div class='modal-dialog'>
+ 			<div class='modal-content'>
+ 				<div class='modal-header'>
+ 					<button type='button' data-dismiss='modal' class='close'>&times;</button>
+ 					<h4>Change password</h4>
+ 				</div>
+ 				<div class='modal-body'>
+ 					<form role='form'>
+ 						<div class='container'>
+		 					<div class='form-group'>
+			 					<label class='control-label col-sm-2' for='currentPassword'>Current password : </label>
+			 					<div class='col-sm-4'>
+			 						<input class='col-sm-4 form-control' type='password' id='currentPassword' name='currentPassword'>
+			 					</div>
+		 					</div>
+		 					<br>
+		 					<br>
+		 					<div class='form-group'>
+			 					<label class='control-label col-sm-2' for='newPassword'>New password : </label>
+			 					<div class='col-sm-4'>
+			 						<input class='col-sm-4 form-control' type='password' id='newPassword' name='newPassword'>
+			 					</div>
+			 				</div>
+			 				<br>
+			 				<br>
+		 					<div class='form-group'>
+			 					<label class='control-label col-sm-2' for='reEnteredPassword'>Re-enter password : </label>
+			 					<div class='col-sm-4'>
+			 						<input class='col-sm-4 form-control' type='password' id='reEnteredPassword' name='reEnteredPassword'>
+			 					</div>
+		 					</div>
+	 					</div>
+	 					<p id='passwordError'></p>
+ 					</form>
+ 				</div>
+ 				<div class='modal-footer'>
+ 					<button class='btn btn-default' id='setNewPassword'>Change password</button>
+ 					<button class='btn btn-default' data-dismiss='modal'>Cancel</button>
+ 				</div>
+ 			</div>
+ 		</div>
+ 	</div>
+
+ 	<form name='logout' method='post'>
+ 		{% csrf_token %}
+		<div id='panel'>
+			<br>
+			<p>&nbsp;&nbsp;&nbsp;&nbsp;{{user}}</p>
+			<span>
+				<a class='btn' id='myAccount' href='viewProfile'>My Account</a>
+			</span>
+			<br>
+			<span>
+				<a class='btn' id='changePassword' style='float:left' name='changePassword'>Change Password</a>
+				<a class='btn' href='/logout/' id='logout' name='logout' style='float:right'>Logout</a>
+			</span>
+		</div>
+	</form>
+{% endblock %}
+
+<!-- javascript/jquery -->
+{% block javascript %}
+	
+	/*
+	var socket;
+	function createSocketChannel(name)
+	{
+		if('WebSocket' in window)
+		{
+			socket = new WebSocket("ws://localhost:8975/"+name);
+			socket.onopen = function()
+			{
+
+
+			}
+			socket.onerror = function(data)
+			{
+				alert('error');
+			}
+
+			socket.onmessage = function(event)
+			{
+				var message = event.data;
+				alert(message);
+			}
+		}
+	}
+	*/
+
+	function GetOnlineUsers()
+	{
+		$.ajax(
+				{
+					type:'get',
+					url:'/getOnlineUsers/',
+					
+					success:function(data)
+							{
+								var ulElement = $('.onlineDiv').find('ul');
+								ulElement.empty();
+								ulElement.append(data);
+								//$('.onlineDiv').show();
+								$('.onlineDiv').css('visibility','visible');
+							},
+					error: function(data)
+							{
+								alert(data);
+								$('.onlineDiv').show();
+							}
+				});
+	}
+
+	$(document).on('ready',function()
+	{
+
+		$('#passwordError').css('color','red');
+
+		$('.onlineDiv').css('display','list-item');
+
+		$('#navbarItemsList').addClass('navbar-right');
+
+		//GetOnlineUsers();
+	
+		$('#online').on('click',function()
+		{
+			var data = $('.onlineDiv').css('visibility');
+			if($('.onlineDiv').css('visibility') === 'visible')
+			{
+				$('.onlineDiv').css('visibility','hidden');
+			}
+			else
+			{
+				GetOnlineUsers();
+			}
+			return false;
+		});
+
+		$('#user').on('click',function()
+		{
+			var position = $('#user').offset();
+			var halfWidth = $(window).width()/2;
+			var left ,height;
+			if(position.left >= halfWidth)
+			{
+				left = position.left - ($('#user').position().left + $('#user').width());
+			}
+			else
+			{
+				left = position.left;
+			}
+			$('#panel').css({'left':left,
+								'top': position.top+30});
+			$('#panel').toggle();
+
+			return false;
+		});
+
+		$('#changePassword').on('click',function()
+		{
+			$('#userModal').modal();
+			$('#currentPassword').focus();
+			$('#passwordError').text('');
+			return false;
+		});
+
+		$('#setNewPassword').on('click',function()
+		{
+			var newPassword = $('#newPassword').val();
+			var confirmPassword = $('#reEnteredPassword').val();
+			var currentPassword = $('#currentPassword').val();
+
+			if(newPassword.length <= 0 || currentPassword.length <= 0 || confirmPassword.length <= 0)
+			{
+				$('#passwordError').text('Password field cannot be empty');
+				return false;
+			}
+
+			if(newPassword !== confirmPassword)
+			{
+				$('#passwordError').text('new password and re-entered password should match');
+				$('#newPassword').val('');
+				$('#reEnteredPassword').val('');
+				return false;
+			}
+
+			if(newPassword === currentPassword)
+			{
+				$('#passwordError').text('current password and new password shouldn\'t be the same');
+				$('#newPassword').val('');
+				$('#reEnteredPassword').val('');
+				$('#currentPassword').val('');
+				return false;
+			}
+
+			$.ajax(
+			{
+				type: 'post',
+				url:'/changePassword/',
+				data:
+				{
+					currentPassword : currentPassword,
+					newPassword : newPassword,
+					confirmPassword : confirmPassword,
+					csrfmiddlewaretoken : $("[name='csrfmiddlewaretoken']").val()
+				},
+				error : function(data)
+						{
+							alert(data.responseText);
+						},
+				success : function(data)
+							{
+								if(data.length == 0)
+								{
+									$('#userModal').hide();
+								}
+								else
+								{
+									$('#passwordError').text(data);
+								}
+							}
+			});
+		});
+
+		$('#userModal').on('hide.bs.modal',function()
+		{
+			$('#newPassword').val('');
+			$('#reEnteredPassword').val('');
+			$('#currentPassword').val('');
+		});
+	});
+{% endblock %}
+
+{% block external_JS %}
+
+	<script type="text/javascript" src='{{ STATIC_URL }}swampdragon/js/dist/swampdragon.min.js'></script>
+	<script type="text/javascript" src='{{ STATIC_URL }}DatingApp/chatting.js'></script>
+	<script type="text/javascript" src=''></script>
+{% endblock %}

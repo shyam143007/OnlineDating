@@ -1,0 +1,6 @@
+{% for user in users %}
+	<li>
+		<label class='chatLabel'>{{user.name}}</label>
+		<input type='hidden' value={{user.username}}>
+	</li>
+{% endfor %}

@@ -1,0 +1,93 @@
+{% extends 'DatingApp/base.html' %}
+
+{% block page_title %}
+	Minion Finder
+{% endblock %}
+
+{% block navbar_Items %}
+	<li>
+		<button class='btn btn-default' id='signUp' name='signUp' value='True'>
+			<span class='glyphicon glyphicon-user'></span>
+			Sign Up
+		</button>
+	</li>
+{% endblock %}
+
+{% block html_body %}
+	<form method='post'>
+		<div class='container-fluid'>
+			<div class='sideDiv'></div>
+			<div class='well col-sm-offset-4 col-sm-3'>
+				{% csrf_token %}
+				<legend>Login</legend>
+				<input class='form-control' id='emailAddress' name='emailAddress' placeholder='Email'>
+				<input class='form-control' type='password' id='password' name='password' placeholder='password'>
+				<div class='clearfix visible-sm'></div>
+				<div class='col-sm-push-5 col-sm-3'>
+					<button class='btn btn-default' id='signIn' name='signIn'>Sign in</button>
+				</div>
+				<br>
+				<br>
+				<br>
+				<div class='clearfix visible-sm'></div>	
+				<div>
+					<p id='Error'></p>
+				</div>
+			 </div>
+		</div>
+	</form>	
+{% endblock %}
+
+
+{% block internal_css %}
+	.well
+	{
+		border-radius: 5px;
+		margin-top: 150px;
+		padding: 10px;
+	}
+	input
+	{
+		margin-top: 10px;
+		margin-bottom: 20px;
+	}
+	.btn
+	{
+		margin-top: 10px;
+		font-size: 16px;
+		margin-bottom: 5px;
+	}
+	
+	#signIn:hover,
+	#signIn:active,
+	#signIn:focus
+	{
+		color: green;
+		margin-right: 5px;
+	}
+
+	#Error
+	{
+		color: red;
+	}
+
+	legend
+	{
+		background-color: #D7D7D7;
+		font-size: 25px;
+		padding-left: 10px;
+	}
+
+	
+{% endblock %}
+
+{% block javascript %}
+	$(document).ready(function()
+	{
+		$('emailAddress').focus();
+
+		$('#navbarItemsList').attr('class','nav navbar-nav navbar-right');
+
+		//$('#navbarBlock').hide();
+	});
+{% endblock %}

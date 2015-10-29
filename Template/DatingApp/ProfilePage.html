@@ -1,0 +1,215 @@
+{% extends 'DatingApp/base.html' %}
+
+{% block javascript %}
+	$(document).on('ready',function()
+	{
+		var date,jsDate;
+		var interestedIn,maritalStatus;
+		interestedIn = '{{ contact.interestedin }}';
+		maritalStatus = '{{ contact.maritalstatus }}';
+
+		if(interestedIn === '')
+		{
+			interestedIn = -1;
+		}
+
+		if(maritalStatus === '')
+		{
+			maritalStatus = -1;
+		}
+
+		$('#navbarBlock').css('display','none');
+
+		$('#btnCancel').on('click',function()
+		{
+			window.history.back();
+			return false;
+		});
+
+		$('#cmbInterestedIn').prop('selectedIndex',interestedIn);
+		$('#cmbMaritalStatus').prop('selectedIndex',maritalStatus);
+		$('#txtCurrentStatus').val('{{ contact.currentstatus }}');
+		$('#txtPhone').val('{{ contact.phone }}');
+		$('#txtHobbies').text('{{ contact.hobbies }}');
+
+
+		
+		date ='{{user.dob|date:"Y/m/d"}}';
+		if(date !=='')
+		{			
+			jsDate = new Date(date);
+		}
+		else
+		{
+			jsDate = new Date();
+		}
+		
+		$('#dob').datepicker('setDate',jsDate);
+		
+		$('#dob').datepicker(
+		{
+			autoclose: true
+		});
+		
+		$('#dob').on('changeDate',function()
+		{
+			var datePickerDate = $('#dob').datepicker('getDate');
+			var selectedDate = $.datepicker.formatDate('yy-mm-dd',datePickerDate);
+			$('#dob').val(selectedDate);
+		});
+
+		if({{user.gender}} == 1)
+		{
+			$('#male').prop('checked',true);
+		}
+		else
+		{
+			$('#female').prop('checked',true);
+		}
+	});
+{% endblock %}
+
+{% block html_body %}
+	<div class='container'>
+		<div class='well col-sm-offset-1'>
+			<form method='post' action='/updateUser/' enctype='multipart/form-data'>
+				{% csrf_token %}
+				<div>
+					<label class='form-label col-sm-2'>Name</label>
+					<div class='col-sm-offset-2'>
+						<textarea name='name' class='form-control'>{{ user.name }}</textarea>
+					</div>
+				</div>
+				<div class='clearfix visible-sm'></div>
+				<br>
+				<div>
+					<label class='form-label col-sm-2'>DOB</label>
+					<div class='col-sm-offset-2'>
+						<input name='dob' id='dob' data-date-format="yyyy-mm-dd" class='form-control'>
+					</div>
+				</div>
+				<div class='clearfix visible-sm'></div>
+				<br>
+				<div>
+					<label class='form-label col-sm-2'>Address</label>
+					<div class='col-sm-offset-2'>
+						<textarea name='address' class='form-control'>{{user.address}}</textarea>
+					</div>
+				</div>
+				<div class='clearfix visible-sm'></div>
+				<br>
+				<div>
+					<label class='form-label col-sm-2'>Gender</label>
+					<div id='gender_div' class='col-sm-offset-2'>
+						<label class='radio-inline'><input id='male' type='radio' value='1' name='gender'>male</label>
+						<label class='radio-inline'><input id='female'  type='radio' value='2' name='gender'>female</label>
+					</div>
+				</div>
+				<div class='clearfix visible-sm'></div>
+				<br>
+				<div>
+					<label class='label-control col-sm-2'>Choose image </label>
+					<div class='col-sm-offset-2'>
+						<input class='form-control' id='btnImageChoser' type='file' name='img' accept='image/*'>
+					</div>
+				</div>
+				<div>
+
+					<fieldset>
+						<legend>Contact Details</legend>
+						<div>
+							<label class='form-label col-sm-2'>Phone</label>
+							<div class='col-sm-offset-2'>
+								<input class='form-control' id='txtPhone' name='phone'>
+							</div>
+						</div>
+						<br>
+						<div>
+							<label class='form-label col-sm-2'>Hobbies</label>
+							<div class='col-sm-offset-2'>
+								<textarea class='form-control' id='txtHobbies' name='hobbies'></textarea>
+							</div>
+						</div>
+						<br>
+						<div>
+							<label class='form-label col-sm-2'>Interested in</label>
+							<div class='col-sm-offset-2'>
+								<select id='cmbInterestedIn' class='form-control' name='interestedIn'>
+									<option value=0>Female</option>
+									<option value=1>Male</option>
+								</select>
+							</div>
+						</div>
+						<br>
+						<div>
+							<label class='form-label col-sm-2'>Current status</label>
+							<div class='col-sm-offset-2'>
+								<input class='form-control' name='currentStatus' id='txtCurrentStatus'>
+							</div>
+						</div>
+						<br>
+						<div>
+							<label class='form-label col-sm-2'>Marital status</label>
+							<div class='col-sm-offset-2'>
+								<select id='cmbMaritalStatus' class='form-control' name='maritalStatus'>
+									<option value=0>Married</option>
+									<option value=1>Un-married</option>
+									<option value=2>In relation</option>
+								</select>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+				<br>
+				<div class='buttons'>
+					<button class='btn btn-info' id='btnSave'>Save</button>
+					<button id='btnCancel' class='btn btn-info'>Cancel</button>
+				</div>
+				<div class='clearfix visible-sm'></div>
+				<br>
+			</form>
+		</div>
+	</div>
+	<div>
+		<p id='error'></p>
+	</div>
+
+{% endblock %}
+
+{% block internal_css %}	
+	div.inputs
+	{
+		height: 50px;
+		margin: 5px;
+		width: 70%;
+		min-width: 250px;
+	}
+	div.textAreas
+	{
+		height: 100px;
+		margin:5px;
+	}
+	textarea
+	{
+		resize:none;
+	}
+	.well
+	{
+		min-width:300px;
+		width:80%;
+	}
+
+	.inline
+	{
+		display : inline;
+	}
+	.buttons
+	{
+		float:right;
+	}
+	.distance
+	{
+		height: 5px;
+		display:block;
+	}
+{% endblock %}

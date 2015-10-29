@@ -1,0 +1,123 @@
+{% extends 'DatingApp/base.html' %}
+
+{% block internal_css %}
+	.container
+	{
+		margin-top: 100px;
+	}
+
+	#firstName,
+	#lastName
+	{
+		width: 45%;
+		display:inline;
+	}
+
+	#password,
+	#reEnterPassword
+	{
+		margin-top: 3px;
+	}
+
+	.form-control
+	{
+		width:90%;
+	}
+
+	span
+	{
+		color: red;
+	}
+
+	fieldset>legend,
+	div>legend
+	{
+		font-size:16px;
+	}
+	
+	.btn.btn-primary
+	{
+		margin-top: 10px;
+	}
+
+	.sideDiv
+	{
+		background-image: url('/static/Images/minion_match.jpg');
+		background-repeat: no-repeat;
+		height:150px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 200px;
+	}
+{% endblock %}
+
+{%block html_body%}
+	<form method='post'>
+		{% csrf_token %}
+		<div class='container'>
+			<div class='col-sm-3 col-sm-push-1 sideDiv'>Find your match in one step</div>
+			<div class='well well-main col-sm-push-4 col-sm-4'>
+				<legend>Name</legend>
+				<fieldset id='fullName'>
+					<input class='form-control' name='firstName' id='firstName'  placeholder='First name'>
+					<input class='form-control' name='lastName' id='lastName' placeholder='Last name'>
+					<br>
+					<span id='name_error'></span>
+				</fieldset>
+				<br>
+				<div id='email_div'>
+					<legend>User name</legend>
+					<input class='form-control' name='emailAddress' id='emailAddress' placeholder='Email address'>
+				<span id='email_error'></span>
+				</div>
+				<br>
+				<fieldset id='passwords'>
+					<legend>Password</legend>
+					<input class='form-control' name='password' id='password' type='password' placeholder='Password'>
+					<input class='form-control' id='reEnterPassword' type='password' placeholder='Re-enter password'>
+				</fieldset>
+				<span id='password_error'></span>
+				<br>
+				<!--
+					<div id='DOB_div'>
+						<legend>DOB</legend>				
+					</div>
+					<br>
+				-->
+				<div id='gender_div'>
+					<legend>Gender</legend>
+					<label class='radio-inline'><input type='radio' value='1' name='gender'>male</label>
+					<label class='radio-inline'><input type='radio' value='2' name='gender'>female</label>
+				</div>
+				<span id='gender_error'></span>
+				<br>
+				<!--
+					<div id='interestedIn_div'>
+					</div>
+					<br>
+				-->
+				<div id='location_div'>
+					<legend>Location</legend>
+					<input class='form-control' name='location' id='location' name='location'>
+					<span></span>
+				</div>
+				<div class='col-sm-push-8 col-sm-2'>
+					<button class='btn btn-primary' id='submit'>Submit</button>
+				</div>
+			</div>
+		</div>
+
+		<span id='serverError'>{{ serverError }}</span>
+	</form>
+{% endblock %}
+
+{% block javascript %}
+	$(document).ready(function()
+	{		
+		$('#navbarBlock').hide();
+		$('#submit').on('click',function()
+		{
+			var pwd = $('#password').val();
+		});
+	});
+{% endblock %}

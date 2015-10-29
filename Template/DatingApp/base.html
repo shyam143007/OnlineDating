@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html> 
+{% load staticfiles %}
+{% load swampdragon_tags %}
+<head>
+	<meta charset="utf-8">
+	<title>
+		{% block page_title %}{% endblock %}
+	</title>
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<!-- jquery libraries -->
+  	<script type="text/javascript" src='{{ STATIC_URL }}JQuery/jquery-1.11.3.js'></script>
+	
+	<!-- bootstrap libraries -->
+	<link rel="stylesheet" type="text/css" href='{{ STATIC_URL }}BootStrap/bootstrap.css'>
+	<link rel="stylesheet" type="text/css" href='{{ STATIC_URL }}BootStrap/bootstrap.min.css'>
+	<link rel="stylesheet" type="text/css" href='{{ STATIC_URL }}BootStrap/bootstrap-theme.css'>
+	<link rel="stylesheet" type="text/css" href='{{ STATIC_URL }}BootStrap/bootstrap-theme.min.css'>
+	<link href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" />
+ 	
+ 	<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script type="text/javascript" src='{{ STATIC_URL }}BootStrap/bootstrap.js'></script>
+	<script type="text/javascript" src='{{ STATIC_URL }}BootStrap/bootstrap.min.js'></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+	{% swampdragon_settings %}
+	{% block external_JS %}
+	{% endblock %}
+
+	{% block external_CSS %}
+	{% endblock %}
+
+	<!-- app scripts and styles -->
+	<script type="text/javascript">
+		{% block javascript %}
+		{% endblock %}
+	</script>
+	<script type="text/javascript">
+
+		function SetMusicImage()
+		{
+			var musicPaused = $('#music').prop('paused');
+			if(!musicPaused)
+			{
+				$('#stop_play').attr('src','/static/Images/unmute.png');
+			}
+			else
+			{
+				$('#stop_play').attr('src','/static/Images/mute.png');
+			}
+		}
+
+		$(document).ready(function()
+			{
+				debugger;
+				$('#stop_play').on('click',function()
+				{
+					var playingMusic = $('#music').prop('paused');
+					if(playingMusic)
+					{
+					 	$('#music').trigger('play');
+					}
+					else
+					{
+						$('#music').trigger('pause');
+					}
+					SetMusicImage();
+					return false;
+				});
+			});
+
+	</script>
+
+	<style type="text/css">		
+		{% block internal_css %}{% endblock %}
+	</style>
+</head>
+<body>
+	<audio autoplay preload loop id='music'>
+		<source src='/static/Music/audio.mp3' type='audio/mp3' />
+	</audio>
+	<form>	
+		<header>
+			<nav id='navbarBlock' class='navbar navbar-default'>
+				<div class='container-fluid'>
+					<div class='navbar navbar-header'>
+						<button type='button' class='navbar-toggle' data-toggle='collapse' data-target='#ul'>
+							<span class='icon-bar'></span>
+							<span class='icon-bar'></span>
+							<span class='icon-bar'></span>
+						</button>
+						<a class='navbar-brand'>
+							{% block navbar_Header %}
+							{% endblock %}
+						</a>
+					</div>
+					<div class='collapse navbar-collapse' id='ul'>
+						<ul id='navbarItemsList' class='nav navbar-nav'>
+							{% block navbar_Items %}
+							{% endblock %}
+							<li>
+								<img id='stop_play' width='40' height='40' src="/static/Images/unmute.png">
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</header>
+	</form>				
+	{% block html_body %}
+	{% endblock %}	
+</body>
+</html>
